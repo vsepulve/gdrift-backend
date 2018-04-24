@@ -1,0 +1,16 @@
+# Configuration for Database
+database:  
+  rdbms: mysql
+  user: user
+  pass: pass
+  protocol: tcp
+  ip: localhost
+  port: 3306
+  name: rimay
+  charset: 'utf8'
+  parseTime: true
+  loc: Local
+
+# Server
+server:
+  port: 4000

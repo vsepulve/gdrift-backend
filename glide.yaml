@@ -1,0 +1,14 @@
+#package: github.com/dwladdimiroc/fondef-rimay-backend
+package: gdrift
+import:
+#- package: github.com/dwladdimiroc/fondef-rimay-backend/auth
+#- package: github.com/dwladdimiroc/fondef-rimay-backend/db
+#- package: github.com/dwladdimiroc/fondef-rimay-backend/models
+#- package: github.com/dwladdimiroc/fondef-rimay-backend/routes
+#- package: github.com/dwladdimiroc/fondef-rimay-backend/utils
+- package: github.com/gin-contrib/cors
+- package: github.com/gin-gonic/gin
+#- package: github.com/go-sql-driver/mysql
+- package: github.com/jinzhu/gorm
+- package: gopkg.in/appleboy/gin-jwt.v2
+- package: gopkg.in/yaml.v2
