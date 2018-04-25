@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gdrift/models"
-	"gdrift/utils"
+	"github.com/vsepulve/gdrift-backend/models"
+	"github.com/vsepulve/gdrift-backend/utils"
 
 	//"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
