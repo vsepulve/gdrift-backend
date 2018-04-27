@@ -119,9 +119,9 @@ func StartSimulation(c *gin.Context) {
 	}
 	defer connection.Close()
 
-	// Envio el tipo de request (un byte con un valor arbitrario, 7 en este caso)
-	fmt.Printf("\nStartSimulation - Enviando request_type (7)\n")
-	request_type := []byte{7}
+	// Envio el tipo de request (un byte con un valor arbitrario, 1 en este caso)
+	fmt.Printf("\nStartSimulation - Enviando request_type (1)\n")
+	request_type := []byte{1}
 	connection.Write(request_type)
 	
 	// Envio el mensaje de prueba (string en el formato length + chars)
