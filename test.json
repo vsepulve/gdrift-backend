@@ -2,7 +2,7 @@
 	"id": "1001",
 	"type": "init",
 	"max-number-of-simulations": "100000",
-	"batch-size": "10000",
+	"batch-size": "100",
 	"population-increase-phases": "0",
 	"name": "Scenario A",
 	"user": "0",
