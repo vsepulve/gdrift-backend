@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"net/http"
 	"encoding/json"
+	"strconv"
 )
 
 func Setup(app *gin.Engine) {
@@ -102,7 +103,8 @@ func StartSimulation(c *gin.Context) {
 	
 	fmt.Printf("StartSimulation - Inicio\n")
 	
-	var data interface{}
+//	var data interface{}
+	var data map[string]interface{}
 	e := c.BindJSON(&data)
 	if e != nil {
 		panic(e)
@@ -111,6 +113,10 @@ func StartSimulation(c *gin.Context) {
 	json_text, e := json.MarshalIndent(data, "", "\t")
 //	json_text, e := json.Marshal(data)
 	
+	sim_id, e := strconv.Atoi( (data["id"]).(string) )
+	n_sims, e := strconv.Atoi( (data["batch-size"]).(string) )
+	
+	fmt.Printf("StartSimulation - sim_id: %d, n_sims: %d\n", sim_id, n_sims)
 	fmt.Printf("StartSimulation - Data: %s\n", json_text)
 	
 	connection, error := net.Dial("tcp", "localhost:12345")
@@ -124,14 +130,23 @@ func StartSimulation(c *gin.Context) {
 	request_type := []byte{1}
 	connection.Write(request_type)
 	
-	// Envio el mensaje de prueba (string en el formato length + chars)
-	// Notar que esto, si o si, implica convertir un numero en binario
+	// Bytes para entero
+	bytes_int := make([]byte, 4)
+	
+	// Envio sim_id
+	binary.LittleEndian.PutUint32(bytes_int, uint32(sim_id))
+	connection.Write(bytes_int)
+	
+	// Envio n_sims
+	binary.LittleEndian.PutUint32(bytes_int, uint32(n_sims))
+	connection.Write(bytes_int)
+	
+	// Envio del json en el formato len + chars
 //	message := "Prueba"
 	message := string(json_text)
 	length := len(message)
 	
 	fmt.Printf("StartSimulation - Enviando length (%d)\n", length)
-	bytes_int := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bytes_int, uint32(length))
 	connection.Write(bytes_int)
 	
