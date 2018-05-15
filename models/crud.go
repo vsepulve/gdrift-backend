@@ -14,7 +14,8 @@ import (
 )
 
 func Setup(app *gin.Engine) {
-//	UsuarioCRUD(app)
+	UsersCRUD(app)
+	ProjectsCRUD(app)
 	
 	// Servicios especificos para gdrift
 	

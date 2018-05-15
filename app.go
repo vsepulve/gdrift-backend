@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/vsepulve/gdrift-backend/db"
 	"github.com/vsepulve/gdrift-backend/models"
 	"github.com/vsepulve/gdrift-backend/utils"
 
@@ -11,7 +12,7 @@ import (
 func main() {
 	utils.LoadConfig("config/config.yaml")
 
-//	db.Setup()
+	db.Setup()
 
 	app := gin.Default()
 	//app.Use(cors.Default())
