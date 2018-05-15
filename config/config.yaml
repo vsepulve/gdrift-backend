@@ -6,7 +6,7 @@ database:
   protocol: tcp
   ip: localhost
   port: 3306
-  name: rimay
+  name: gdrift
   charset: 'utf8'
   parseTime: true
   loc: Local
