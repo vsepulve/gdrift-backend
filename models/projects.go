@@ -11,6 +11,23 @@ import (
 
 )
 
+// Notar que aqui no esta claro que hacer con tipos de marcadores diferentes
+type Marker_data struct {
+	Type              int
+	Size              int
+	Pool_size         int
+	Mutation_model    int
+	Mutation_params   []float32
+	// Por ahora asumo que tengo la RUTA al archivo de sampling
+	// Con eso y el Type, puede saber como leer el archivo
+	Sample_path       string
+}
+
+type Individual_data struct {
+	Plody             int
+	Markers           []Marker_data
+}
+
 type Projects struct {
 	Id               int           `gorm:"column:id;not null;primary_key"`
 	Name             string        `gorm:"column:name;not null"`
@@ -18,6 +35,7 @@ type Projects struct {
 	Owner            Users         `gorm:"ForeignKey:Owner_id;AssociationForeignKey:Id"`
 	Date_created     *time.Time    `gorm:"column:date_created"`
 	Date_finished    *time.Time    `gorm:"column:date_finished"`
+	Individual       Individual_data
 }
 
 func ProjectsCRUD(app *gin.Engine) {

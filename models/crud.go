@@ -17,20 +17,33 @@ func Setup(app *gin.Engine) {
 	UsersCRUD(app)
 	ProjectsCRUD(app)
 	
-	// Servicios especificos para gdrift
-	
-	// Servicio de entrega inicial de datos
-	
-	// Servicio de inicio de simulacion
+	// Servicios para pruebas de comunicacion con C++
 	app.GET("/simulate/", TestSimulation)
 	app.POST("/simulate/", StartSimulation)
 	
+	// Servicios reales del nuevo model
+	
+	// Crear Proyecto
+	//   - Recibe un json con los datos generales del proyecto (inlutendo samples)
+	//   - Por ahora supongo que los samples estan en archivos y que el json incluye las rutas
+	//   - El json recivido puede ser de tipo "Projects" (revisar "Individual_data" para los datos de la especie)
+	//   - Responde el json agregando datos adicionales (id primero que nada)
+	//   - Activa el servicio C++ de creacion de target del proyecto
+//	app.POST("/create-project/", CreateProject)
+	
+	// Iniciar Simulacion
+	//   - Recibe un json con el escenario y los datos del proyecto
+	//   - La idea es que bastara con el id o que los datos vengan bien estructurados
+	//   - Agrega una Simulacion asociada al proyecto
+	//   - Activa el servicio C++ de inicio de simulaciones
+	//   - Si todo sale bien, agrega la simulacion a la BD
+	//   - Retorna el mismo json agregando datos adicionales (id primero)
+//	app.POST("/start-simulation/", StartSimulation)
+	
+	
+	
 }
 
-type Client struct {
-	socket net.Conn
-	data   chan []byte
-}
 
 func TestSimulation(c *gin.Context) {
 	
