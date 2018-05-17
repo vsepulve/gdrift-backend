@@ -11,8 +11,8 @@ import (
 	"io"
 	"bytes"
 	"net/http"
-	"encoding/json"
-	"strconv"
+//	"encoding/json"
+//	"strconv"
 	"time"
 )
 
@@ -41,7 +41,7 @@ func Setup(app *gin.Engine) {
 	//   - Activa el servicio C++ de inicio de simulaciones
 	//   - Si todo sale bien, agrega la simulacion a la BD
 	//   - Retorna el mismo json agregando datos adicionales (id primero)
-//	app.POST("/start-simulation/", StartSimulation)
+	app.POST("/start-simulation/", StartSimulation)
 	
 	
 	
@@ -74,7 +74,6 @@ func CreateProject(c *gin.Context) {
 		db.Model(&proyecto).Related(&proyecto.Owner, "Owner_id")
 	}
 	
-	
 	/*
 	// Desactivado mientras trabajo en el Daemon
 	
@@ -94,6 +93,8 @@ func CreateProject(c *gin.Context) {
 	request_type := []byte{1}
 	connection.Write(request_type)
 	
+	// Otros datos...
+	
 	// Espero respuesta
 	fmt.Printf("CreateProject - Recibiendo respuesta\n")
 	var buf bytes.Buffer
@@ -102,7 +103,6 @@ func CreateProject(c *gin.Context) {
 	fmt.Printf("CreateProject - resp_code: %d\n", resp_code)
 	*/
 	
-	
 	// Si hay problemas, envio codigo y salgo
 	
 	// Respondo con el proyecto actualizado
@@ -110,6 +110,66 @@ func CreateProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, proyecto)
 	
 	fmt.Printf("CreateProject - Fin\n")
+}
+
+func StartSimulation(c *gin.Context) {
+
+	fmt.Printf("StartSimulation - Inicio\n")
+	
+	// Json con la simulacion de entrada (de la pagina: paso 2)
+	var simulacion Simulations
+	c.BindJSON(&simulacion)
+	
+	// Conexion a BD
+	db := db.Database()
+	defer db.Close()
+	
+	// Agrego la simulacion a la BD
+	// Notar que de este modo, quizas seria razonable borrar de la BD si hay errores
+	fmt.Printf("StartSimulation - Agregando a la BD (para obtener Id)\n")
+	if err := db.Create(&simulacion).Error; err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	} else {
+//		db.Model(&simulacion).Related(&simulacion.Project, "Project_id")
+	}
+	
+	/*
+	// Desactivado mientras trabajo en el Daemon
+	
+	// Comunicacion con el demonio c++
+	fmt.Printf("StartSimulation - Comunicando con C++ (%s, %s)\n", utils.Config.Daemon.Ip, utils.Config.Daemon.Port)
+	connection, err := net.Dial("tcp", utils.Config.Daemon.Ip+":"+utils.Config.Daemon.Port)
+	if err != nil {
+//		fmt.Println(error)
+		fmt.Printf("StartSimulation - Error al conectar con Daemon\n")
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	defer connection.Close()
+	
+	// Envio los datos de simulacion para su inicializacion (crear target)
+	fmt.Printf("StartSimulation - Enviando datos (request type)\n")
+	request_type := []byte{2}
+	connection.Write(request_type)
+	
+	// Otros datos...
+	
+	// Espero respuesta
+	fmt.Printf("StartSimulation - Recibiendo respuesta\n")
+	var buf bytes.Buffer
+	io.Copy(&buf, connection)
+	resp_code := binary.LittleEndian.Uint32(buf.Bytes())
+	fmt.Printf("StartSimulation - resp_code: %d\n", resp_code)
+	*/
+	
+	// Si hay problemas, envio codigo y salgo
+	
+	// Respondo con la simulacion actualizado
+	fmt.Printf("StartSimulation - Terminando\n")
+	c.JSON(http.StatusCreated, simulacion)
+	
+	fmt.Printf("StartSimulation - Fin\n")
 }
 
 
@@ -180,7 +240,7 @@ func TestSimulation(c *gin.Context) {
 	
 }
 
-
+/*
 func StartSimulation(c *gin.Context) {
 	
 	fmt.Printf("StartSimulation - Inicio\n")
@@ -252,7 +312,7 @@ func StartSimulation(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 
 }
-
+*/
 
 
 
