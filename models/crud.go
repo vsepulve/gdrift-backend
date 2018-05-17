@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/vsepulve/gdrift-backend/db"
-//	"github.com/vsepulve/gdrift-backend/utils"
+	"github.com/vsepulve/gdrift-backend/utils"
 	"github.com/gin-gonic/gin"
 	"fmt"
 	"net"
@@ -11,7 +11,7 @@ import (
 	"io"
 	"bytes"
 	"net/http"
-//	"encoding/json"
+	"encoding/json"
 //	"strconv"
 	"time"
 )
@@ -32,6 +32,7 @@ func Setup(app *gin.Engine) {
 	//   - El json recivido puede ser de tipo "Projects" (revisar "Individual_data" para los datos de la especie)
 	//   - Responde el json agregando datos adicionales (id primero que nada)
 	//   - Activa el servicio C++ de creacion de target del proyecto
+	//   - Notar que el C++ almacena el json del proyecto (con el id como nombre), luego el Factory usa por separado ese json para generar el perfil y el de la simulacion para los eventos
 	app.POST("/create-project/", CreateProject)
 	
 	// Iniciar Simulacion
@@ -74,7 +75,7 @@ func CreateProject(c *gin.Context) {
 		db.Model(&proyecto).Related(&proyecto.Owner, "Owner_id")
 	}
 	
-	/*
+	
 	// Desactivado mientras trabajo en el Daemon
 	
 	// Comunicacion con el demonio c++
@@ -95,15 +96,36 @@ func CreateProject(c *gin.Context) {
 	
 	// Otros datos...
 	
+	fmt.Printf("StartSimulation - Enviando Id de Proyecto (%d)\n", proyecto.Id)
+	bytes_int := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bytes_int, uint32(proyecto.Id))
+	connection.Write(bytes_int)
+	
+	json_text, e := json.MarshalIndent(proyecto, "", "\t")
+	if e != nil {
+		panic(e)
+	}
+	fmt.Printf("StartSimulation - Data: %s\n", json_text)
+	message := string(json_text)
+	length := len(message)
+	
+	fmt.Printf("StartSimulation - Enviando length (%d)\n", length)
+	binary.LittleEndian.PutUint32(bytes_int, uint32(length))
+	connection.Write(bytes_int)
+	
+	fmt.Printf("StartSimulation - Enviando mensaje\n")
+	connection.Write([]byte(strings.TrimRight(message, "\n")))
+	
 	// Espero respuesta
 	fmt.Printf("CreateProject - Recibiendo respuesta\n")
 	var buf bytes.Buffer
 	io.Copy(&buf, connection)
 	resp_code := binary.LittleEndian.Uint32(buf.Bytes())
 	fmt.Printf("CreateProject - resp_code: %d\n", resp_code)
-	*/
 	
 	// Si hay problemas, envio codigo y salgo
+	
+	
 	
 	// Respondo con el proyecto actualizado
 	fmt.Printf("CreateProject - Terminando\n")
