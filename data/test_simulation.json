@@ -1,0 +1,150 @@
+{
+	"Project_id": 27, 
+	"Model": 1, 
+	"Events": [
+		{
+			"id": "0",
+			"type": "create",
+			"timestamp": {
+				"type": "fixed",
+				"value": "0"
+			},
+			"params": {
+				"population": {
+					"name": "p0",
+					"size": {
+						"type": "random",
+						"distribution": {
+							"type": "uniform",
+							"params": {
+								"a": "5000",
+								"b": "15000"
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"id": "1",
+			"type": "increment",
+			"timestamp": {
+				"type": "random",
+				"distribution": {
+					"type": "uniform",
+					"params": {
+						"a": "0",
+						"b": "100"
+					}
+				}
+			},
+			"params": {
+				"source": {
+					"population": {
+						"name": "p0",
+						"percentage": {
+							"type": "random",
+							"distribution": {
+								"type": "uniform",
+								"params": {
+									"a": "0.25",
+									"b": "0.75"
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"id": "2",
+			"type": "split",
+			"timestamp": {
+				"type": "random",
+				"distribution": {
+					"type": "uniform",
+					"params": {
+						"a": "5000",
+						"b": "15000"
+					}
+				}
+			},
+			"params": {
+				"source": {
+					"population": {
+						"name": "p0"
+					}
+				},
+				"partitions": "2",
+				"destination": [{
+					"population": {
+						"name": "p1"
+					}
+				}, {
+					"population": {
+						"name": "p2"
+					}
+				}]
+			}
+		}, {
+			"id": "3",
+			"type": "decrement",
+			"timestamp": {
+				"type": "random",
+				"distribution": {
+					"type": "uniform",
+					"params": {
+						"a": "45000",
+						"b": "65000"
+					}
+				}
+			},
+			"params": {
+				"source": {
+					"population": {
+						"name": "p1",
+						"percentage": {
+							"type": "random",
+							"distribution": {
+								"type": "uniform",
+								"params": {
+									"a": "0.75",
+									"b": "0.95"
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"id": "4",
+			"type": "endsim",
+			"timestamp": {
+				"type": "random",
+				"distribution": {
+					"type": "uniform",
+					"params": {
+						"a": "50000",
+						"b": "70000"
+					}
+				}
+			},
+			"params": {
+				"sampling": [{
+					"name": "sample1",
+					"source": {
+						"population": {
+							"name": "p1"
+						}
+					}
+				}, {
+					"name": "sample2",
+					"source": {
+						"population": {
+							"name": "p2"
+						}
+					}
+				}]
+			}
+		}
+	] 
+
+}
