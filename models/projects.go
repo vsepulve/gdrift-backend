@@ -35,10 +35,10 @@ type Projects struct {
 	Name             string        `gorm:"column:name;not null"`
 	Owner_id         int           `gorm:"column:users_id;not null"`
 	Owner            Users         `gorm:"ForeignKey:Owner_id;AssociationForeignKey:Id"`
+	N_populations    int           `gorm:"column:n_populations"`
 	Date_created     *time.Time    `gorm:"column:date_created"`
 	Date_finished    *time.Time    `gorm:"column:date_finished"`
 	Individual       Individual_data
-//	Populations_num  int
 }
 
 func ProjectsCRUD(app *gin.Engine) {
