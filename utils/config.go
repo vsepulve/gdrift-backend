@@ -27,9 +27,15 @@ type Server struct {
 	Port string `yaml:port`
 }
 
+type Daemon struct {
+	Ip   string `yaml:"ip"`
+	Port string `yaml:"port"`
+}
+
 type Configuration struct {
 	Database Database `yaml:"database"`
 	Server   Server   `yaml:"server"`
+	Daemon   Daemon   `yaml:"daemon"`
 }
 
 func LoadConfig(filename string) {

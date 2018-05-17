@@ -14,3 +14,8 @@ database:
 # Server
 server:
   port: 4000
+  
+# C++ Processing Daemon
+daemon:
+  ip: localhost
+  port: 12345
