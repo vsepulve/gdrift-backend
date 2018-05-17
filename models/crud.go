@@ -1,6 +1,8 @@
 package models
 
 import (
+	"github.com/vsepulve/gdrift-backend/db"
+//	"github.com/vsepulve/gdrift-backend/utils"
 	"github.com/gin-gonic/gin"
 	"fmt"
 	"net"
@@ -11,6 +13,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"strconv"
+	"time"
 )
 
 func Setup(app *gin.Engine) {
@@ -29,7 +32,7 @@ func Setup(app *gin.Engine) {
 	//   - El json recivido puede ser de tipo "Projects" (revisar "Individual_data" para los datos de la especie)
 	//   - Responde el json agregando datos adicionales (id primero que nada)
 	//   - Activa el servicio C++ de creacion de target del proyecto
-//	app.POST("/create-project/", CreateProject)
+	app.POST("/create-project/", CreateProject)
 	
 	// Iniciar Simulacion
 	//   - Recibe un json con el escenario y los datos del proyecto
@@ -42,6 +45,71 @@ func Setup(app *gin.Engine) {
 	
 	
 	
+}
+
+func CreateProject(c *gin.Context) {
+
+	fmt.Printf("CreateProject - Inicio\n")
+	
+	// Json con el proyecto de entrada (de la pagina: paso 1)
+	var proyecto Projects
+	c.BindJSON(&proyecto)
+	
+	// Por ahora fijo la fecha actual como creacion
+	fmt.Printf("CreateProject - Agregando Date_created (now)\n")
+	fecha_actual := time.Now()
+	proyecto.Date_created = &fecha_actual
+	
+	// Conexion a BD
+	db := db.Database()
+	defer db.Close()
+	
+	// Agrego el proyecto a la BD
+	// Notar que de este modo, quizas seria razonable borrar de la BD si hay errores
+	fmt.Printf("CreateProject - Agregando a la BD (para obtener Id)\n")
+	if err := db.Create(&proyecto).Error; err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	} else {
+		db.Model(&proyecto).Related(&proyecto.Owner, "Owner_id")
+	}
+	
+	
+	/*
+	// Desactivado mientras trabajo en el Daemon
+	
+	// Comunicacion con el demonio c++
+	fmt.Printf("CreateProject - Comunicando con C++ (%s, %s)\n", utils.Config.Daemon.Ip, utils.Config.Daemon.Port)
+	connection, err := net.Dial("tcp", utils.Config.Daemon.Ip+":"+utils.Config.Daemon.Port)
+	if err != nil {
+//		fmt.Println(error)
+		fmt.Printf("CreateProject - Error al conectar con Daemon\n")
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	defer connection.Close()
+	
+	// Envio los datos del proyecto para su inicializacion (crear target)
+	fmt.Printf("CreateProject - Enviando datos (request type)\n")
+	request_type := []byte{1}
+	connection.Write(request_type)
+	
+	// Espero respuesta
+	fmt.Printf("CreateProject - Recibiendo respuesta\n")
+	var buf bytes.Buffer
+	io.Copy(&buf, connection)
+	resp_code := binary.LittleEndian.Uint32(buf.Bytes())
+	fmt.Printf("CreateProject - resp_code: %d\n", resp_code)
+	*/
+	
+	
+	// Si hay problemas, envio codigo y salgo
+	
+	// Respondo con el proyecto actualizado
+	fmt.Printf("CreateProject - Terminando\n")
+	c.JSON(http.StatusCreated, proyecto)
+	
+	fmt.Printf("CreateProject - Fin\n")
 }
 
 
