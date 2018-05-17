@@ -7,20 +7,22 @@ import (
 	"time"
 
 	"github.com/vsepulve/gdrift-backend/db"
-	"gdrift/utils"
+	"github.com/vsepulve/gdrift-backend/utils"
 
 )
 
 // Notar que aqui no esta claro que hacer con tipos de marcadores diferentes
 type Marker_data struct {
-	Type              int
-	Size              int
-	Pool_size         int
-	Mutation_model    int
-	Mutation_params   []float32
+	Type                 int
+	Size                 int
+	Pool_size            int
+	Mutation_model       int
+	Distribution_type    string
+	Distribution_params  []float32
 	// Por ahora asumo que tengo la RUTA al archivo de sampling
 	// Con eso y el Type, puede saber como leer el archivo
-	Sample_path       string
+	// Notar que es un arreglo, uno por poblacion
+	Sample_path          []string
 }
 
 type Individual_data struct {
@@ -36,6 +38,7 @@ type Projects struct {
 	Date_created     *time.Time    `gorm:"column:date_created"`
 	Date_finished    *time.Time    `gorm:"column:date_finished"`
 	Individual       Individual_data
+//	Populations_num  int
 }
 
 func ProjectsCRUD(app *gin.Engine) {
