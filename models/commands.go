@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-//	"strconv"
+	"strconv"
 )
 
 func CommandsCRUD(app *gin.Engine) {
@@ -46,7 +46,7 @@ func CommandsCRUD(app *gin.Engine) {
 	app.POST("/simulation/", StartSimulation)
 	
 	// Detener Simulacion
-//	app.DELETE("/simulation/:id", StopSimulation)
+	app.DELETE("/simulation/:id", StopSimulation)
 	
 	// Consultar Proyecto
 //	app.GET("/simulation/:id", QuerySimulation)
@@ -119,10 +119,7 @@ func CreateProject(c *gin.Context) {
 	binary.LittleEndian.PutUint32(bytes_int, uint32(proyecto.Id))
 	connection.Write(bytes_int)
 	
-	json_text, e := json.MarshalIndent(proyecto, "", "\t")
-	if e != nil {
-		panic(e)
-	}
+	json_text, _ := json.MarshalIndent(proyecto, "", "\t")
 	fmt.Printf("CreateProject - Data: %s\n", json_text)
 	message := string(json_text)
 	length := len(message)
@@ -144,7 +141,7 @@ func CreateProject(c *gin.Context) {
 	// Si hay problemas, envio codigo y salgo
 	if resp_code != 1 {
 		fmt.Printf("CreateProject - Error al recibir respuesta\n")
-		c.String(http.StatusInternalServerError, err.Error())
+		c.String(http.StatusInternalServerError, "Error")
 	
 	} else{
 		// Respondo con el proyecto actualizado
@@ -208,10 +205,7 @@ func StartSimulation(c *gin.Context) {
 	binary.LittleEndian.PutUint32(bytes_int, uint32(simulacion.Id))
 	connection.Write(bytes_int)
 	
-	json_text, e := json.MarshalIndent(simulacion, "", "\t")
-	if e != nil {
-		panic(e)
-	}
+	json_text, _ := json.MarshalIndent(simulacion, "", "\t")
 	fmt.Printf("StartSimulation - Data: %s\n", json_text)
 	message := string(json_text)
 	length := len(message)
@@ -233,7 +227,7 @@ func StartSimulation(c *gin.Context) {
 	// Si hay problemas, envio codigo y salgo
 	if resp_code != 1 {
 		fmt.Printf("StartSimulation - Error al recibir respuesta\n")
-		c.String(http.StatusInternalServerError, err.Error())
+		c.String(http.StatusInternalServerError, "Error")
 	
 	} else{
 		// Respondo con el proyecto actualizado
@@ -244,6 +238,64 @@ func StartSimulation(c *gin.Context) {
 	fmt.Printf("StartSimulation - Fin\n")
 }
 
+func StopSimulation(c *gin.Context) {
+
+	fmt.Printf("StopSimulation - Inicio\n")
+	
+	id := c.Param("id")
+	sim_id, _ := strconv.Atoi(id)
+	
+	// Conexion a BD (para verificar que la simulacion siga corriendo?, lo dejo para despues)
+	// Quzias tambien para marcar la simulacion como detenida
+//	db := db.Database()
+//	defer db.Close()
+
+	// Comunicacion con el demonio c++
+	fmt.Printf("StopSimulation - Comunicando con C++ (%s, %s)\n", utils.Config.Daemon.Ip, utils.Config.Daemon.Port)
+	connection, err := net.Dial("tcp", utils.Config.Daemon.Ip+":"+utils.Config.Daemon.Port)
+	if err != nil {
+//		fmt.Println(error)
+		fmt.Printf("StopSimulation - Error al conectar con Daemon\n")
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	defer connection.Close()
+	
+	// Datos que deben ser enviados:
+	//   - Requsst type (1 byte, value = 3)
+	//   - Simulation Id (4 bytes)
+	request_type := []byte{3}
+	bytes_int := make([]byte, 4)
+	
+	// Envio los datos de simulacion para agregarla a la cola de trabajo
+	fmt.Printf("StopSimulation - Enviando datos (request type)\n")
+	connection.Write(request_type)
+	
+	fmt.Printf("StopSimulation - Enviando Id de Simulacion (%d)\n", sim_id)
+	binary.LittleEndian.PutUint32(bytes_int, uint32(sim_id))
+	connection.Write(bytes_int)
+	
+	// Espero respuesta
+	fmt.Printf("StopSimulation - Recibiendo respuesta\n")
+	var buf bytes.Buffer
+	io.Copy(&buf, connection)
+	resp_code := binary.LittleEndian.Uint32(buf.Bytes())
+	fmt.Printf("StopSimulation - resp_code: %d\n", resp_code)
+	
+	// Si hay problemas, envio codigo y salgo
+	if resp_code != 1 {
+		fmt.Printf("StopSimulation - Error al recibir respuesta\n")
+		c.String(http.StatusInternalServerError, "Error")
+	
+	} else{
+		// Respondo con el proyecto actualizado
+		fmt.Printf("StopSimulation - Terminando\n")
+		c.String(http.StatusOK, "")
+	}
+	
+	
+	fmt.Printf("StopSimulation - Fin\n")
+}
 
 
 
