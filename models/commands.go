@@ -52,17 +52,19 @@ func CommandsCRUD(app *gin.Engine) {
 //	app.GET("/simulation/:id", QuerySimulation)
 	
 	
-	// Quizas sea razonable agregar servicios relacionados a projects y simulations por separado
-	//   - Algo como POST a /project/ para iniciar
-	//   - DELETE para detener el projecto completo
-	//   - GET para consultar estado del proyecto (esto es opcional)
-	//   - POST de /simulation/ para agregar y lanzar simulacion
-	//   - DELETE de /simulation/ para detener simulacion
-	//   - GET de /simulation/ para consultar resultados de simulacion
+	// Quizas sea razonable agregar servicios relacionados a projects y simulations por separado, algo como:
+	//   - (1) POST a /project/ para iniciar
+	//   - (2) DELETE para detener el projecto completo
+	//   - (3) GET para consultar estado del proyecto (esto es opcional)
+	//   - (4) POST de /simulation/ para agregar y lanzar simulacion
+	//   - (5) DELETE de /simulation/ para detener simulacion
+	//   - (6) GET de /simulation/ para consultar resultados de simulacion
 	// Los resultados de varias simulaciones se pueden componer en el json de respuesta del proyecto
 	// Las simulaciones de un proyecto las puedo consultar a la BD
 	// Los valores (o graficos) por simulacion los puedo obtener por socket del C++
 	// Quzias todos los valores de graficos los pueda obtener uno a uno en float de 4 bytes
+	// Tambien deberia definir los tipos de request desde aca y considerando la pagina
+	// Por ahora para ser razonable usar los 6 tipos de arriba (de 1 a 6)
 	
 }
 
@@ -186,7 +188,7 @@ func StartSimulation(c *gin.Context) {
 	defer connection.Close()
 	
 	// Datos que deben ser enviados:
-	//   - Requsst type (1 byte, value = 2)
+	//   - Requsst type (1 byte, value = 4)
 	//   - Project Id (4 bytes)
 	//   - Simulation Id (4 bytes)
 	//   - Json completo de simulacion (como string largo + bytes)
@@ -262,7 +264,7 @@ func StopSimulation(c *gin.Context) {
 	defer connection.Close()
 	
 	// Datos que deben ser enviados:
-	//   - Requsst type (1 byte, value = 3)
+	//   - Requsst type (1 byte, value = 5)
 	//   - Simulation Id (4 bytes)
 	request_type := []byte{3}
 	bytes_int := make([]byte, 4)
@@ -292,7 +294,6 @@ func StopSimulation(c *gin.Context) {
 		fmt.Printf("StopSimulation - Terminando\n")
 		c.String(http.StatusOK, "")
 	}
-	
 	
 	fmt.Printf("StopSimulation - Fin\n")
 }
