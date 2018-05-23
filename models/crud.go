@@ -5,9 +5,14 @@ import (
 )
 
 func Setup(app *gin.Engine) {
+	// Usuarios
 	UsersCRUD(app)
+	// Consultas SQL normales
 	ProjectsCRUD(app)
-	CommandsCRUD(app)
+	SimulationsCRUD(app)
+	// Comandos
+	ProjectCommandsCRUD(app)
+	SimulationCommandsCRUD(app)
 }
 
 
