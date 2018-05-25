@@ -124,7 +124,7 @@ func CreateProject(c *gin.Context) {
 	fmt.Printf("CreateProject - resp_code: %d\n", resp_code)
 	
 	// Si hay problemas, envio codigo y salgo
-	if resp_code != 1 {
+	if resp_code != 0 {
 		fmt.Printf("CreateProject - Error al recibir respuesta\n")
 		c.String(http.StatusInternalServerError, "Error")
 	

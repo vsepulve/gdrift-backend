@@ -124,7 +124,7 @@ func StartSimulation(c *gin.Context) {
 	fmt.Printf("StartSimulation - resp_code: %d\n", resp_code)
 	
 	// Si hay problemas, envio codigo y salgo
-	if resp_code != 1 {
+	if resp_code != 0 {
 		fmt.Printf("StartSimulation - Error al recibir respuesta\n")
 		c.String(http.StatusInternalServerError, "Error")
 	
@@ -182,7 +182,7 @@ func StopSimulation(c *gin.Context) {
 	fmt.Printf("StopSimulation - resp_code: %d\n", resp_code)
 	
 	// Si hay problemas, envio codigo y salgo
-	if resp_code != 1 {
+	if resp_code != 0 {
 		fmt.Printf("StopSimulation - Error al recibir respuesta\n")
 		c.String(http.StatusInternalServerError, "Error")
 	
