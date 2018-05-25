@@ -35,7 +35,6 @@ func SimulationCommandsCRUD(app *gin.Engine) {
 	// Consultar Simulacion
 	app.GET("/simulation-command/:id", QuerySimulation)
 	
-	
 	// Quizas sea razonable agregar servicios relacionados a projects y simulations por separado, algo como:
 	//   - (1) POST a /project/ para iniciar
 	//   - (2) DELETE para detener el projecto completo
@@ -196,6 +195,26 @@ func StopSimulation(c *gin.Context) {
 	fmt.Printf("StopSimulation - Fin\n")
 }
 
+type Point struct {
+	X float32
+	Y float32
+}
+
+type Curve struct {
+	Name string
+	Size int
+	// Version 1: arreglos independientes (la otra opcion serian pares)
+//	Data_x []float32
+//	Data_y []float32
+	// Version 2: Pares
+	Data []Point
+}
+
+type Graph struct {
+	Title string
+	Curves []Curve
+}
+
 func QuerySimulation(c *gin.Context) {
 
 	id := c.Param("id")
@@ -203,6 +222,67 @@ func QuerySimulation(c *gin.Context) {
 
 	fmt.Printf("QuerySimulation - Inicio (id: \"%s\" -> %d)\n", id, sim_id)
 	
+	// Por ahora preparo un grafico dummy para retornar
+	var grafico Graph
+	grafico.Title = "Test Graph"
+	grafico.Curves = make([]Curve, 0)
+	
+	var curva Curve
+	curva.Name = "Curve 1"
+	curva.Size = 3
+	// Version 1
+//	curva.Data_x = make([]float32, 0)
+//	curva.Data_x = append(curva.Data_x, 0.1)
+//	curva.Data_x = append(curva.Data_x, 0.5)
+//	curva.Data_x = append(curva.Data_x, 0.9)
+//	curva.Data_y = make([]float32, 0)
+//	curva.Data_y = append(curva.Data_y, 0.1)
+//	curva.Data_y = append(curva.Data_y, 0.3)
+//	curva.Data_y = append(curva.Data_y, 0.85)
+	// Version 2
+	curva.Data = make([]Point, 0)
+	var punto Point
+	punto.X = 0.1
+	punto.Y = 0.1
+	curva.Data = append(curva.Data, punto)
+	punto.X = 0.5
+	punto.Y = 0.3
+	curva.Data = append(curva.Data, punto)
+	punto.X = 0.9
+	punto.Y = 0.85
+	curva.Data = append(curva.Data, punto)
+	
+	grafico.Curves = append(grafico.Curves, curva)
+	
+	curva.Name = "Curve 2"
+	curva.Size = 4
+	// Version 1
+//	curva.Data_x = make([]float32, 0)
+//	curva.Data_x = append(curva.Data_x, 0.1)
+//	curva.Data_x = append(curva.Data_x, 0.5)
+//	curva.Data_x = append(curva.Data_x, 0.9)
+//	curva.Data_y = make([]float32, 0)
+//	curva.Data_y = append(curva.Data_y, 0.1)
+//	curva.Data_y = append(curva.Data_y, 0.3)
+//	curva.Data_y = append(curva.Data_y, 0.85)
+	// Version 2
+	curva.Data = make([]Point, 0)
+	punto.X = 0.2
+	punto.Y = 0.6
+	curva.Data = append(curva.Data, punto)
+	punto.X = 0.4
+	punto.Y = 0.5
+	curva.Data = append(curva.Data, punto)
+	punto.X = 0.6
+	punto.Y = 0.3
+	curva.Data = append(curva.Data, punto)
+	punto.X = 0.8
+	punto.Y = 0.1
+	curva.Data = append(curva.Data, punto)
+	
+	grafico.Curves = append(grafico.Curves, curva)
+	
+	c.JSON(http.StatusOK, grafico)
 
 }
 
