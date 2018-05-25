@@ -2,6 +2,10 @@
 	"Name": "Test Project 01",
 	"Owner_id": 1,
 	"N_populations": 2,
+	"Population_names": [
+		"p1",
+		"p2"
+	],
 	"Individual": {
 		"Plody": 1,
 		"Markers": [
@@ -16,8 +20,8 @@
 					0.0000001
 				],
 				"Sample_path": [
-					"./data/sample_a.genepop",
-					"./data/sample_b.genepop"
+					"/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_a.genepop",
+					"/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_b.genepop"
 				]
 			}
 		]
