@@ -89,7 +89,7 @@ func StartSimulation(c *gin.Context) {
 	//   - Project Id (4 bytes)
 	//   - Simulation Id (4 bytes)
 	//   - Json completo de simulacion (como string largo + bytes)
-	request_type := []byte{2}
+	request_type := []byte{4}
 	bytes_int := make([]byte, 4)
 	
 	// Envio los datos de simulacion para agregarla a la cola de trabajo
@@ -163,7 +163,7 @@ func StopSimulation(c *gin.Context) {
 	// Datos que deben ser enviados:
 	//   - Requsst type (1 byte, value = 5)
 	//   - Simulation Id (4 bytes)
-	request_type := []byte{3}
+	request_type := []byte{5}
 	bytes_int := make([]byte, 4)
 	
 	// Envio los datos de simulacion para agregarla a la cola de trabajo
