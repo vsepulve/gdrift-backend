@@ -1,13 +1,9 @@
 {
 	"Name": "Test Project 01",
 	"Owner_id": 1,
-	"N_populations": 2,
-	"Population_names": [
-		"p1",
-		"p2"
-	],
 	"Individual": {
 		"Plody": 1,
+		"N_markers": 1,
 		"Markers": [
 			{
 				"Type": 1,
@@ -18,12 +14,20 @@
 				"Distribution_params": [
 					0.000000001,
 					0.0000001
-				],
-				"Sample_path": [
-					"/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_a.genepop",
-					"/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_b.genepop"
 				]
 			}
 		]
-	}
+	},
+	"N_populations": 2,
+	"Populations": [
+		{
+			"Name": "p1",
+			"Sample_path": [ "/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_a.genepop" ]
+		},
+		{
+			"Name": "p2",
+			"Sample_path": [ "/home/vsepulve/go/src/github.com/vsepulve/gdrift-backend/data/sample_b.genepop" ]
+		}
+	]
+	
 }

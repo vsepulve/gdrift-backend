@@ -19,15 +19,19 @@ type Marker_data struct {
 	Mutation_model       int
 	Distribution_type    string
 	Distribution_params  []float32
-	// Por ahora asumo que tengo la RUTA al archivo de sampling
-	// Con eso y el Type, puede saber como leer el archivo
-	// Notar que es un arreglo, uno por poblacion
-	Sample_path          []string
 }
 
 type Individual_data struct {
 	Plody             int
+	N_markers         int
 	Markers           []Marker_data
+}
+
+type Population_data struct {
+	Name             string
+	// Por ahora guardo un sample_path por cada marcador
+	// Ese dato esta en Projects.Individual.N_markers
+	Sample_path      []string
 }
 
 type Projects struct {
@@ -35,11 +39,11 @@ type Projects struct {
 	Name             string        `gorm:"column:name;not null"`
 	Owner_id         int           `gorm:"column:users_id;not null"`
 	Owner            Users         `gorm:"ForeignKey:Owner_id;AssociationForeignKey:Id"`
-	N_populations    int           `gorm:"column:n_populations"`
-	Population_names []string      `gorm:"-"`
 	Date_created     *time.Time    `gorm:"column:date_created"`
 	Date_finished    *time.Time    `gorm:"column:date_finished"`
 	Individual       Individual_data `gorm:"-"`
+	N_populations    int           `gorm:"column:n_populations"`
+	Populations      []Population_data `gorm:"-"`
 }
 
 func ProjectsCRUD(app *gin.Engine) {
