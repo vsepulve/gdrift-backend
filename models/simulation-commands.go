@@ -222,6 +222,71 @@ func QuerySimulation(c *gin.Context) {
 
 	fmt.Printf("QuerySimulation - Inicio (id: \"%s\" -> %d)\n", id, sim_id)
 	
+	// Comunicacion con el demonio c++
+	fmt.Printf("QuerySimulation - Comunicando con C++ (%s, %s)\n", utils.Config.Daemon.Ip, utils.Config.Daemon.Port)
+	connection, err := net.Dial("tcp", utils.Config.Daemon.Ip+":"+utils.Config.Daemon.Port)
+	if err != nil {
+//		fmt.Println(error)
+		fmt.Printf("QuerySimulation - Error al conectar con Daemon\n")
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	defer connection.Close()
+	
+	// Datos que deben ser enviados:
+	//   - Requsst type (1 byte, value = 6)
+	//   - Simulation Id (4 bytes)
+	request_type := []byte{6}
+	bytes_int := make([]byte, 4)
+	
+	// Envio los datos de simulacion para agregarla a la cola de trabajo
+	fmt.Printf("QuerySimulation - Enviando datos (request type)\n")
+	connection.Write(request_type)
+	
+	fmt.Printf("QuerySimulation - Enviando Id de Simulacion (%d)\n", sim_id)
+	binary.LittleEndian.PutUint32(bytes_int, uint32(sim_id))
+	connection.Write(bytes_int)
+	
+	// Espero respuesta
+	//  - Codigo general de estado en int
+	//  - Dependiendo del estado anterior, una respuesta
+	//  - La respuesta seria un *STRING* del json de los graficos, directamente
+	
+	fmt.Printf("QuerySimulation - Recibiendo respuesta\n")
+	var buf bytes.Buffer
+//	io.Copy(&buf, connection)
+	io.CopyN(&buf, connection, 4)
+	resp_code := binary.LittleEndian.Uint32(buf.Bytes())
+	fmt.Printf("QuerySimulation - resp_code: %d\n", resp_code)
+	
+	var resp_str string
+	
+	if resp_code == 0 {
+		fmt.Printf("QuerySimulation - Sin datos\n")
+		c.String(http.StatusOK, "")
+	} else{
+		fmt.Printf("QuerySimulation - Recibiendo grafico\n")
+//		n_bytes, err := io.Copy(&buf, connection)
+		var buf_str bytes.Buffer
+		n_bytes, _ := io.Copy(&buf_str, connection)
+		fmt.Printf("QuerySimulation - n_bytes: %d\n", n_bytes)
+		
+		resp_str = buf_str.String()
+		fmt.Printf("QuerySimulation - Resp: \"%s\"\n", resp_str)
+		
+	}
+	
+	// Notar que estoy asumiendo un json bien armado
+	c.JSON(http.StatusOK, resp_str)
+	
+	
+	
+	
+	
+	
+	/*
+	
+	fmt.Printf("QuerySimulation - Preparando graficos dummy\n")
 	// Por ahora preparo un grafico dummy para retornar
 	var grafico Graph
 	grafico.Title = "Test Graph"
@@ -284,6 +349,9 @@ func QuerySimulation(c *gin.Context) {
 	
 	c.JSON(http.StatusOK, grafico)
 
+	*/
+	
+	
 }
 
 
