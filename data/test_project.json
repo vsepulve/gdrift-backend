@@ -10,11 +10,16 @@
 				"Size": 663,
 				"Pool_size": 1048576,
 				"Mutation_model": 1,
-				"Distribution_type": "uniform",
-				"Distribution_params": [
-					0.000000001,
-					0.0000001
-				]
+				"Rate" : {
+					"type": "random",
+					"distribution": {
+						"type": "uniform",
+						"params": {
+							"a": "0.000000001",
+							"b": "0.0000001"
+						}
+					}	
+				}
 			}
 		]
 	},
