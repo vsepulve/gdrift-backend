@@ -17,8 +17,9 @@ type Marker_data struct {
 	Size                 int
 	Pool_size            int
 	Mutation_model       int
-	Distribution_type    string
-	Distribution_params  []float32
+//	Distribution_type    string
+//	Distribution_params  []float32
+	Rate               interface{}
 }
 
 type Individual_data struct {
