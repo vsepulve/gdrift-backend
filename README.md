@@ -1,6 +1,14 @@
 # gdrift-backend
 Repository for the REST services of Gdrift's backend
 
+Configuration
+-------------------
+```
+An appropriate mysql installation must be available
+A database example can be found in `db/example.sql`
+Configuration file `config/config.yaml` must be prepared locally
+```
+
 Install
 -------------------
 ```
