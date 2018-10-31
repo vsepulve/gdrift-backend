@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/vsepulve/gdrift-backend/db"
-	"gdrift/utils"
+	"github.com/vsepulve/gdrift-backend/utils"
 //	"fmt"
 
 )
