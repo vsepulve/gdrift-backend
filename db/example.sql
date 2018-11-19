@@ -55,6 +55,7 @@ DROP TABLE IF EXISTS `simulations`;
 CREATE TABLE `simulations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `projects_id` int(11) NOT NULL,
+  `batch_size` int(11) NOT NULL,
   `model` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `simulations_projects_fk1` (`projects_id`),
