@@ -96,12 +96,16 @@ func StartSimulation(c *gin.Context) {
 	fmt.Printf("StartSimulation - Enviando datos (request type)\n")
 	connection.Write(request_type)
 	
-	fmt.Printf("StartSimulation - Enviando Id de Proyecto (%d)\n", simulacion.Id)
+	fmt.Printf("StartSimulation - Enviando Id de Proyecto (%d)\n", simulacion.Project_id)
 	binary.LittleEndian.PutUint32(bytes_int, uint32(simulacion.Project_id))
 	connection.Write(bytes_int)
 	
 	fmt.Printf("StartSimulation - Enviando Id de Simulacion (%d)\n", simulacion.Id)
 	binary.LittleEndian.PutUint32(bytes_int, uint32(simulacion.Id))
+	connection.Write(bytes_int)
+	
+	fmt.Printf("StartSimulation - Enviando Batch Size (%d)\n", simulacion.Batch_size)
+	binary.LittleEndian.PutUint32(bytes_int, uint32(simulacion.Batch_size))
 	connection.Write(bytes_int)
 	
 	json_text, _ := json.MarshalIndent(simulacion, "", "\t")

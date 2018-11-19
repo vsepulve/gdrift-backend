@@ -28,6 +28,7 @@ import (
 type Simulations struct {
 	Id               int           `gorm:"column:id;not null;primary_key"`
 	Project_id       int           `gorm:"column:projects_id;not null"`
+	Batch_size       int           `gorm:"column:batch_size;not null"`
 	// Notar que, de hecho, basta con el id, no se necesita el projecto
 //	Project          Projects      `gorm:"ForeignKey:Project_id;AssociationForeignKey:Id"`
 	Model            int           `gorm:"column:model"`
